@@ -1,0 +1,26 @@
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --card-bg: #f0f0f0;
+  --footer-bg: #f0f0f0;
+  --skeleton-bg: #e0e0e0;
+  --button-bg: #333;
+  --button-text: #fff;
+  --border-bg: #333;
+}
+
+[data-theme="dark"] {
+  --bg-color: #1a1a1a;
+  --text-color: #ffffff;
+  --card-bg: #2a2a2a;
+  --footer-bg: #2a2a2a;
+  --skeleton-bg: #3a3a3a;
+  --button-bg: #f0f0f0;
+  --button-text: #333;
+  --border-bg: #f0f0f0;
+}
+
+body {
+  margin: 0;
+  box-sizing: border-box;
+}
