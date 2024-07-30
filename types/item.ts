@@ -1,5 +1,7 @@
 export type ItemType = 'green' | 'purple' | 'orange';
 
+export type Rare = 'default' | 'silver' | 'gold' | 'epic';
+
 export interface Position {
   x: number;
   y: number;
@@ -11,4 +13,5 @@ export interface Item {
   count: number;
   title: string;
   description: string;
+  rare: Rare;
 }

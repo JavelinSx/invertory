@@ -1,27 +1,20 @@
 <template>
     <div class="theme-wrapper">
-        <button @click="toggleTheme" class="theme-toggle">
-            Switch to {{ theme === 'light' ? 'Dark' : 'Light' }} Theme
+        <ThemeToggle />
+        <button @click="addRandomItem" class="add-item-btn">
+            Add Random Item
         </button>
+        <SortingOptions />
         <div class="layout-default">
             <div class="content">
-                <div class="card">
-                    <Skeletor type="rect" class="skeletor-card-image" width="200" height="240" />
-                    <Skeletor type="text" class="skeletor-card-title" width="190" height="26" />
-                    <Skeletor type="text" class="skeletor-card-title" width="155" height="10" />
-                    <Skeletor type="text" class="skeletor-card-title" width="190" height="10" />
-                    <Skeletor type="text" class="skeletor-card-title" width="170" height="10" />
-                    <Skeletor type="text" class="skeletor-card-title" width="160" height="10" />
-                    <Skeletor type="text" class="skeletor-card-title" width="140" height="10" />
-                    <Skeletor type="text" class="skeletor-card-title" width="80" height="10" />
-                </div>
+                <CardSkeleton />
+
                 <div class="inventory">
+
                     <slot />
                 </div>
             </div>
-            <footer>
-                <Skeletor type="text" class="skeletor-footer" />
-            </footer>
+            <FooterSkeleton />
         </div>
     </div>
 </template>
@@ -29,32 +22,43 @@
 <script setup lang="ts">
 import { useTheme } from '~/composables/useTheme'
 import { watch } from 'vue'
+import { useInventoryStore } from '@/store/invetory'
+import ThemeToggle from '~/components/ThemeToggle.vue'
+import CardSkeleton from '~/components/CardSkeleton.vue'
+import FooterSkeleton from '~/components/FooterSkeleton.vue'
+import SortingOptions from '~/components/SortingOptions.vue'
+import type { ItemType, Rare } from '@/types/item'
 
-const { theme, toggleTheme } = useTheme()
+const { theme } = useTheme()
+const store = useInventoryStore()
 
 watch(theme, (newTheme) => {
     document.documentElement.setAttribute('data-theme', newTheme)
 })
+
+const addRandomItem = () => {
+    const types: ItemType[] = ['green', 'purple', 'orange']
+    const rare: Rare[] = ['default', 'silver', 'gold', 'epic']
+    const randomType = types[Math.floor(Math.random() * types.length)]
+    const randomRare = rare[Math.floor(Math.random() * rare.length)]
+    const randomCount = Math.floor(Math.random() * 99) + 1
+    const randomTitle = `Item ${Math.floor(Math.random() * 1000)}`
+    const randomDescription = `This is a ${randomType} item with ${randomCount} units.`
+
+    store.addItem({
+        type: randomType,
+        rare: randomRare,
+        count: randomCount,
+        title: randomTitle,
+        description: randomDescription,
+    })
+}
 </script>
 
 <style scoped lang="scss">
 .theme-wrapper {
     background-color: var(--bg-color);
     color: var(--text-color);
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.theme-toggle {
-
-    top: 20px;
-    right: 20px;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    background-color: var(--button-bg);
-    color: var(--button-text);
     transition: background-color 0.3s, color 0.3s;
 }
 
@@ -69,46 +73,30 @@ watch(theme, (newTheme) => {
     padding: 20px;
 }
 
-.card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100%;
-    width: 236px;
-    padding: 15px;
-    border-radius: 8px;
-    background-color: var(--card-bg);
-    transition: background-color 0.3s;
-
-    :deep(.vue-skeletor) {
-        margin-bottom: 10px;
-        border-radius: 8px;
-        background-color: var(--skeleton-bg);
-    }
-
-    .skeletor-card-image {
-        display: block;
-    }
-
-    .skeletor-card-title {
-        height: 26px;
-        width: 80%;
-    }
-}
-
 .inventory {
     flex-grow: 1;
     margin-left: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
-footer {
-    margin-top: 24px;
-    padding: 18px;
-    background-color: var(--footer-bg);
-    transition: background-color 0.3s;
+.add-item-btn {
+    margin-left: 10px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    transition: background-color 0.3s, color 0.3s;
 
-    :deep(.vue-skeletor) {
-        background-color: var(--skeleton-bg);
+    &:hover {
+        opacity: 0.8;
+    }
+
+    &:active {
+        transform: scale(0.98);
     }
 }
 </style>

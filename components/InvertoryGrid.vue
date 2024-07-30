@@ -1,18 +1,16 @@
 <template>
-  <button @click="addRandomItem">
-    Add Random Item
-  </button>
-  <VueDraggableNext class="inventory-grid" v-model="items" item-key="id" @end="onDragEnd">
+  <ClientOnly>
+    <VueDraggableNext class="inventory-grid" v-model="items" item-key="id">
 
-    <div v-for="element in items" class="inventory-slot">
-      <InventoryItem v-if="element" :item="element" @click="showDetails(element)" />
-      <div v-else class="empty-slot">Empty</div>
-    </div>
-    <ItemDetails v-if="selectedItem" :item="selectedItem" @close="selectedItem = null" @remove="removeItemFromInventory"
-      @update="toggleAction" @cancel="toggleAction" @submit="changeItemInfo" :isAction="itemIsAction" />
-  </VueDraggableNext>
-
-
+      <div v-for="element in items" class="inventory-slot">
+        <InventoryItem v-if="element" :item="element" @click="showDetails(element)" />
+        <div v-else class="empty-slot"></div>
+      </div>
+      <ItemDetails v-if="selectedItem" :item="selectedItem" @close="selectedItem = null"
+        @remove="removeItemFromInventory" @update="toggleAction" @cancel="toggleAction" @submit="changeItemInfo"
+        :isAction="itemIsAction" />
+    </VueDraggableNext>
+  </ClientOnly>
 
 </template>
 
@@ -22,10 +20,13 @@ import { VueDraggableNext } from 'vue-draggable-next';
 import { useInventoryStore } from '@/store/invetory';
 import InventoryItem from './InventoryItem.vue';
 import ItemDetails from './ItemDetails.vue';
-import type { Item, ItemType } from '@/types/item';
+import type { Item, ItemType, Rare } from '@/types/item';
 
 const store = useInventoryStore();
-const items = computed(() => store.items);
+const items = computed({
+  get: () => store.items,
+  set: (newValue) => store.items = newValue,
+});
 const selectedItem = ref<Item | null>(null);
 const itemIsAction = ref(false)
 const showDetails = (item: Item) => {
@@ -50,24 +51,7 @@ const changeItemInfo = (count: number) => {
   }
 
 }
-const addRandomItem = () => {
-  const types: ItemType[] = ['green', 'purple', 'orange'];
-  const randomType = types[Math.floor(Math.random() * types.length)];
-  const randomCount = Math.floor(Math.random() * 99) + 1;
-  const randomTitle = `Item ${Math.floor(Math.random() * 1000)}`;
-  const randomDescription = `This is a ${randomType} item with ${randomCount} units.`;
 
-  store.addItem({
-    type: randomType,
-    count: randomCount,
-    title: randomTitle,
-    description: randomDescription,
-  });
-};
-
-const onDragEnd = () => {
-  store.saveToLocalStorage();
-};
 </script>
 
 <style lang="scss">
@@ -84,6 +68,7 @@ const onDragEnd = () => {
   border: 1px solid var(--border-bg);
   cursor: move;
   overflow: hidden;
+  margin: -0.5px;
   @apply p-3;
 
   &:nth-child(1) {
