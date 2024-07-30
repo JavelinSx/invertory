@@ -1,17 +1,13 @@
 <template>
-  <ClientOnly>
-    <VueDraggableNext class="inventory-grid" v-model="items" item-key="id">
+  <VueDraggableNext class="inventory-grid" v-model="items" item-key="id">
 
-      <div v-for="element in items" class="inventory-slot">
-        <InventoryItem v-if="element" :item="element" @click="showDetails(element)" />
-        <div v-else class="empty-slot"></div>
-      </div>
-      <ItemDetails v-if="selectedItem" :item="selectedItem" @close="selectedItem = null"
-        @remove="removeItemFromInventory" @update="toggleAction" @cancel="toggleAction" @submit="changeItemInfo"
-        :isAction="itemIsAction" />
-    </VueDraggableNext>
-  </ClientOnly>
-
+    <div v-for="element in items" class="inventory-slot">
+      <InventoryItem v-if="element" :item="element" @click="showDetails(element)" />
+      <div v-else class="empty-slot"></div>
+    </div>
+    <ItemDetails v-if="selectedItem" :item="selectedItem" @close="selectedItem = null" @remove="removeItemFromInventory"
+      @update="toggleAction" @cancel="toggleAction" @submit="changeItemInfo" :isAction="itemIsAction" />
+  </VueDraggableNext>
 </template>
 
 <script setup lang="ts">
@@ -69,7 +65,6 @@ const changeItemInfo = (count: number) => {
   cursor: move;
   overflow: hidden;
   margin: -0.5px;
-  @apply p-3;
 
   &:nth-child(1) {
     border-top-left-radius: 12px;
@@ -94,7 +89,5 @@ const changeItemInfo = (count: number) => {
   align-items: center;
   height: 100%;
   color: #999;
-
-
 }
 </style>

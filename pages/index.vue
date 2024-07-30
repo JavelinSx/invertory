@@ -1,6 +1,9 @@
 <template>
+
     <InvertoryGrid></InvertoryGrid>
+
 </template>
-<script lang="ts">
+<script setup lang="ts">
+
 import InvertoryGrid from '~/components/InvertoryGrid.vue';
 </script>
